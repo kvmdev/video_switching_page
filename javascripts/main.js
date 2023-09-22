@@ -1,19 +1,37 @@
-const URLS = ["https://www.youtube.com/embed/Usm9p_sewQ4?si=j8QqdckKlnASo79I", "https://www.youtube.com/embed/ItAru_T2dKs?si=AYHaCCDAnwZdyo4R", "https://www.youtube.com/embed/6B-faA6tjcY?si=kMGE08XDZKNj25Ms"];
-
+let URLS = '';
+let number = 0;
+let data = [];
 const button = document.getElementById('button');
-let counter = 0;
-const video = document.getElementById('video');
+const videoArea = document.getElementById("video");
 
-button.addEventListener('click', ()=>{
-    function change(indx){
-        video.setAttribute('src', URLS[indx]);
+function getData() {
+    const request = new XMLHttpRequest(); //-- 1
+    
+    request.onreadystatechange = function() { //-- 2-1
+      if (request.readyState == 4) { //-- 2-2
+        if(request.status == 200) { //-- 2-3
+          URLS = request.response.split(','); //-- 2-4
+          console.log(URLS);
+        }
+      }
     }
-    if(counter == 2){
-        counter = 0;
-        change(counter);
-        counter++;
-    } else {
-        change(counter);
-        counter++;
-    }
-});
+    
+    request.open("GET", "data.txt"); //-- 3-1
+    request.responseType = "text"; //-- 3-2
+    request.send(null); //-- 3-3
+}
+
+function changeVideo() {
+  if(number > 2){
+    number = 0;
+    videoArea.setAttribute('src', URLS[number]);
+    number++;
+  } else {
+    videoArea.setAttribute('src', URLS[number]);
+    number++;
+  }
+}
+
+button.addEventListener('click', changeVideo);
+
+window.onload = getData;
